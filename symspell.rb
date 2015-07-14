@@ -267,7 +267,6 @@ class SymSpell
   end
 
   def damerau_levenshtein_distance(source, target)
-    puts "#{source} => #{target}"
     m = source.size
     n = target.size
     h = Array.new(m + 2) { Array.new(n + 2) { 0 } }
@@ -301,7 +300,6 @@ class SymSpell
 
       sd[source[i - 1]] = i
     end
-    puts h[m + 1][n + 1]
     return h[m + 1][n + 1]
   end
 end
