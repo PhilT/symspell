@@ -11,7 +11,7 @@ This is a straight port of SymSpell from C# to Ruby. I've started moving things 
 
 Original source with inline comments and README is here: https://github.com/wolfgarbe/symspell.
 
-I've changed very little from the original source (apart from removing the commandline interface) but please note it has no test coverage at this time.
+I've changed very little from the original source (apart from removing the commandline interface) but please note it has only some very basic end to end tests at this time.
 
 
 ## Usage
@@ -26,5 +26,7 @@ I've changed very little from the original source (apart from removing the comma
 
 ## EDIT_DISTANCE_MAX
 
-`EDIT_DISTANCE_MAX` is the number of letters to remove to find a match. Standard text should be around 2-3 if you have a smaller dictionary you could try larger numbers to catch drastically misspelt words. Note that creating the dictionary will take a lot longer as the combinations go up exponentially.
+`EDIT_DISTANCE_MAX` is the number of operations needed to tranform one string into another.
+
+For example the edit distance between **CA** and **ABC** is 2 because **CA** => **AC** => **ABC**. Edit distances of 2-5 are normal. Note, however, increasing EDIT_DISTANCE_MAX exponentially increases the combinations and therefore the time it takes to create the dictionary.
 

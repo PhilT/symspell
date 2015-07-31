@@ -1,9 +1,9 @@
 require 'rake/testtask'
 
 desc 'Test, build and install the gem'
-task :default => [:spec, :install]
+task :default => [:test]
 
-Rake::TestTask.new(:spec) do |t|
+Rake::TestTask.new(:test) do |t|
   t.pattern = 'tests/*_test.rb'
 end
 

@@ -15,7 +15,7 @@ class SymSpell
     word_count = 0
 
     File.open(corpus, 'r').each_line do |word|
-      word_count += 1 if create_dictionary_entry(word.strip, language)
+      word_count += 1 if create_dictionary_entry(word.strip)
     end
   end
 
@@ -156,10 +156,10 @@ class SymSpell
     text.downcase.scan(/[\w-[\d_]]+/).first
   end
 
-  def create_dictionary_entry(key, language)
+  def create_dictionary_entry(key)
     result = false
     value = nil
-    if valueo = @dictionary[language + key]
+    if valueo = @dictionary[key]
       if valueo.is_a?(Fixnum)
         tmp = valueo
         value = DictionaryItem.new
@@ -171,7 +171,7 @@ class SymSpell
     elsif @wordlist.count < MAX_INT
       value = DictionaryItem.new
       value.count += 1
-      @dictionary[language + key] = value
+      @dictionary[key] = value
 
       @maxlength = key.size if key.size > @maxlength
     end
@@ -182,17 +182,17 @@ class SymSpell
       result = true
 
       edits(key, 0, Set.new).each do |delete|
-        if value2 = @dictionary[language + delete]
+        if value2 = @dictionary[delete]
           if value2.is_a?(Fixnum)
             tmp = value2
             di = DictionaryItem.new
             di.suggestions << tmp
-            @dictionary[language + delete] = di
+            @dictionary[delete] = di
             add_lowest_distance(di, key, keyint, delete) unless di.suggestions.include?(keyint)
           elsif !value2.suggestions.include?(keyint)
           end
         else
-          @dictionary[language + delete] = keyint
+          @dictionary[delete] = keyint
         end
       end
     end
@@ -239,7 +239,7 @@ class SymSpell
       sd[letter] = 0 unless sd[letter]
     end
 
-    (0..m).each do |i|
+    (1..m).each do |i|
       db = 0
       (0..n).each do |j|
         i1 = sd[target[j - 1]]
