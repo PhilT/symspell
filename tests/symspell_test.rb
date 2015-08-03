@@ -4,11 +4,13 @@ require_relative '../lib/symspell'
 class SymSpellTest < Minitest::Test
   def setup
     @edit_distance_max = 2
+    @verbose = 0
   end
 
   def subject
-    @subject ||= SymSpell.new(@edit_distance_max).tap do |subject|
-      subject.create_dictionary 'tests/words.txt'
+    @subject ||= SymSpell.new(@edit_distance_max, @verbose).tap do |subject|
+      words = %w(joe mark john peter mary andrew imogen)
+      subject.create_dictionary words
     end
   end
   def test_lookup_correctly_spelled_word
@@ -25,7 +27,13 @@ class SymSpellTest < Minitest::Test
 
   def test_lookup_finds_match_after_turning_up_edit_distance
     @edit_distance_max = 3
-    assert_equal 'imogen', subject.lookup('amigon').first.term
+    assert_equal ['imogen'], subject.lookup('amigon').map(&:term)
+  end
+
+  def test_lookup_returns_multiple_suggestions
+    @edit_distance_max = 2
+    @verbose = 2
+    assert_equal ['joe', 'john'], subject.lookup('jo').map(&:term)
   end
 end
 

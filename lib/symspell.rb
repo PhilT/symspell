@@ -4,8 +4,9 @@ require 'set'
 class SymSpell
   MAX_INT = 2**30 - 1
 
-  def initialize(edit_distance_max)
+  def initialize(edit_distance_max, verbose)
     @edit_distance_max = edit_distance_max
+    @verbose = verbose
     @maxlength = 0
     @dictionary = {}
     @wordlist = []
@@ -14,7 +15,7 @@ class SymSpell
   def create_dictionary(corpus)
     word_count = 0
 
-    File.open(corpus, 'r').each_line do |word|
+    corpus.each do |word|
       word_count += 1 if create_dictionary_entry(word.strip)
     end
   end
@@ -35,7 +36,7 @@ class SymSpell
     while (candidates.count > 0)
       candidate = candidates.shift
 
-      return sort(suggestions) if ((suggestions.count > 0) && (input.size - candidate.size > suggestions[0].distance))
+      return sort(suggestions) if @verbose < 2 && suggestions.count > 0 && (input.size - candidate.size) > suggestions[0].distance
 
       if valueo = @dictionary[candidate]
         value = DictionaryItem.new
@@ -51,7 +52,7 @@ class SymSpell
           si.count = value.count
           si.distance = input.size - candidate.size
           suggestions << si
-          return sort(suggestions) if input.size - candidate.size == 0
+          return sort(suggestions) if @verbose < 2 && input.size - candidate.size == 0
         end
 
         value2 = nil
@@ -85,12 +86,8 @@ class SymSpell
               end
             end
 
-            if suggestions.count > 0 && suggestions[0].distance > distance
-              suggestions.clear
-            end
-            if suggestions.count > 0 && distance > suggestions[0].distance
-              next
-            end
+            suggestions.clear if @verbose < 2  && suggestions.count > 0 && suggestions[0].distance > distance
+            next if @verbose < 2  && suggestions.count > 0 && distance > suggestions[0].distance
 
             if (distance <= @edit_distance_max)
               if value2 = @dictionary[suggestion]
@@ -200,8 +197,11 @@ class SymSpell
   end
 
   def add_lowest_distance(item, suggestion, suggestionint, delete)
-    if item.suggestions.count > 0 && @wordlist[item.suggestions[0]].size - delete.size > suggestion.size - delete.size
+    if @verbose < 2 && item.suggestions.count > 0 && @wordlist[item.suggestions[0]].size - delete.size > suggestion.size - delete.size
       item.suggestions.clear
+    end
+    if @verbose == 2 || item.suggestions.size == 0 || (@wordlist[item.suggestions[0]].size - delete.size >= suggestion.size - delete.size)
+      item.suggestions << suggestionint
     end
   end
 
@@ -221,7 +221,13 @@ class SymSpell
   end
 
   def sort(suggestions)
-    suggestions.sort! {|x, y| -x.count <=> y.count}
+    if @verbose < 2
+      suggestions.sort! {|x, y| -x.count <=> y.count}
+    else
+      suggestions.sort! {|x, y| (2 * x.distance <=> y.distance) - x.count <=> y.count}
+    end
+
+    @verbose == 0 ? suggestions[0..0] : suggestions
   end
 
   def damerau_levenshtein_distance(source, target)

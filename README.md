@@ -20,13 +20,19 @@ I've changed very little from the original source (apart from removing the comma
 
     require 'symspell'
 
-    speller = SymSpell.new <EDIT_DISTANCE_MAX>
-    speller.create_dictionary('words.txt')
-    speller.lookup('something')
+    speller = SymSpell.new <EDIT_DISTANCE_MAX> <VERBOSE>
+    speller.create_dictionary %w(joe jo mark john peter mary andrew imogen)
+    speller.lookup 'jo'
 
-## EDIT_DISTANCE_MAX
+### EDIT_DISTANCE_MAX
 
 `EDIT_DISTANCE_MAX` is the number of operations needed to tranform one string into another.
 
 For example the edit distance between **CA** and **ABC** is 2 because **CA** => **AC** => **ABC**. Edit distances of 2-5 are normal. Note, however, increasing EDIT_DISTANCE_MAX exponentially increases the combinations and therefore the time it takes to create the dictionary.
+
+### VERBOSE
+
+* 0 - Return the top suggestion
+* 1 - Return the suggestions with the lowest edit distance
+* 2 - Return all suggestions
 
