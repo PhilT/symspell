@@ -2,7 +2,7 @@ require 'base64'
 
 Gem::Specification.new do |s|
   s.name        = 'symspell'
-  s.version     = '0.0.1'
+  s.version     = '0.0.2'
   s.authors     = 'Phil Thompson'
   s.email       = Base64.decode64("cGhpbEBlbGVjdHJpY3Zpc2lvbnMuY29t\n")
   s.summary     = 'Ruby port of the symetric spell checking algorithm'
