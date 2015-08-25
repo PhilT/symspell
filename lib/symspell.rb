@@ -90,7 +90,8 @@ class SymSpell
             next if @verbose < 2  && suggestions.count > 0 && distance > suggestions[0].distance
 
             if (distance <= @edit_distance_max)
-              if value2 = @dictionary[suggestion]
+              value2 = @dictionary[suggestion]
+              if value2
                 si = SuggestItem.new
                 si.term = suggestion
                 si.count = value2.count
@@ -156,11 +157,13 @@ class SymSpell
   def create_dictionary_entry(key)
     result = false
     value = nil
-    if valueo = @dictionary[key]
+    valueo = @dictionary[key]
+    if valueo
       if valueo.is_a?(Fixnum)
         tmp = valueo
         value = DictionaryItem.new
         value.suggestions << tmp
+        @dictionary[key] = value
       else
         value = valueo
       end
