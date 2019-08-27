@@ -40,7 +40,7 @@ class SymSpell
 
       if valueo = @dictionary[candidate]
         value = DictionaryItem.new
-        if (valueo.is_a?(Fixnum))
+        if (valueo.is_a?(Integer))
           value.suggestions << valueo
         else
           value = valueo
@@ -159,7 +159,7 @@ class SymSpell
     value = nil
     valueo = @dictionary[key]
     if valueo
-      if valueo.is_a?(Fixnum)
+      if valueo.is_a?(Integer)
         tmp = valueo
         value = DictionaryItem.new
         value.suggestions << tmp
@@ -183,7 +183,7 @@ class SymSpell
 
       edits(key, 0, Set.new).each do |delete|
         if value2 = @dictionary[delete]
-          if value2.is_a?(Fixnum)
+          if value2.is_a?(Integer)
             tmp = value2
             di = DictionaryItem.new
             di.suggestions << tmp
