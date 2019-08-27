@@ -22,7 +22,7 @@ class SymSpellTest < Minitest::Test
   end
 
   def test_lookup_fails_to_find_match
-    assert_equal nil, subject.lookup('amigon').first
+    assert_nil(subject.lookup('amigon').first)
   end
 
   def test_lookup_finds_match_after_turning_up_edit_distance
